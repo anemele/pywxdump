@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "pywxdump"
+version = "0.1.0"
+description = ""
+authors = ["Jason Swift <anemele@outlook.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pymem = "^1.13.1"
+psutil = "^5.9.7"
+pycryptodomex = "^3.19.1"
+pywin32 = "^306"
+click = "^8.1.7"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[tool.poetry.scripts]
+wxdump = "pywxdump.cli:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
