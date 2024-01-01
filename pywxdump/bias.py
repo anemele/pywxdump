@@ -1,6 +1,6 @@
 import ctypes
 import json
-import os
+import os.path as op
 import re
 
 from pymem.pattern import pattern_scan_all, pattern_scan_module
@@ -79,7 +79,7 @@ def get_key_bias2(db_path: str) -> int:
 
         return bytes(key)
 
-    MicroMsg_path = os.path.join(db_path, "MSG\\MicroMsg.db")
+    MicroMsg_path = op.join(db_path, "MSG\\MicroMsg.db")
 
     module = MODULE
     if module is None:
@@ -115,45 +115,35 @@ def get_key_bias2(db_path: str) -> int:
 
 
 def get_bias_by_info(
-    account: bytes,
-    mobile: bytes,
     name: bytes,
+    account: bytes,
+    phone: bytes,
     key: str | None,
     db_path: str | None,
 ):
-    if key is None:
-        bkey = b""
-    else:
-        bkey = bytes.fromhex(key)
-
-    if db_path is None or not os.path.exists(db_path):
-        db_path = ""
-
-    account_bias = search_memory_value(account)
-    mobile_bias = search_memory_value(mobile)
     name_bias = search_memory_value(name)
+    account_bias = search_memory_value(account)
+    phone_bias = search_memory_value(phone)
     key_bias = get_key_bias1()
-    if key is not None and key_bias <= 0:
-        key_bias = search_key(bkey)
-    if db_path is not None and key_bias <= 0:
+    if key_bias <= 0 and key is not None:
+        key_bias = search_key(bytes.fromhex(key))
+    if key_bias <= 0 and db_path is not None and op.exists(db_path):
         key_bias = get_key_bias2(db_path)
 
-    data = {
+    return {
         WX_VERSION: dict(
             name=name_bias,
             account=account_bias,
-            phone=mobile_bias,
+            phone=phone_bias,
             email=0,
             key=key_bias,
         )
     }
 
-    return data
 
-
-def update_bias_data(bias_data_file: str, rdata: dict[str, dict[str, int]]):
+def update_bias_data(bias_data_file: str, data: dict[str, dict[str, int]]):
     with open(bias_data_file, "rb") as fp:
-        data = json.load(fp)
-    data.update(rdata)
+        tmp = json.load(fp)
+    tmp.update(data)
     with open(bias_data_file, "w") as fp:
-        json.dump(data, fp, indent=2)
+        json.dump(tmp, fp, indent=2)

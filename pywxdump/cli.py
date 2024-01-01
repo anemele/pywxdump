@@ -44,12 +44,12 @@ def cmd_get_bias(
     bdp: str | None,
 ):
     """获取微信基址偏移"""
-    rdata = get_bias_by_info(
+    bias = get_bias_by_info(
         name.encode(), account.encode(), phone.encode(), key, db_path
     )
-    pprint(rdata)
+    pprint(bias)
     if bdp is not None:
-        update_bias_data(bdp, rdata)
+        update_bias_data(bdp, bias)
 
 
 @cli.command(name='info')

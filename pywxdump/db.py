@@ -1,11 +1,11 @@
-import os
+import os.path as op
 import shutil
 import sqlite3
 import time
 
 
 def merge_copy_db(db_path: str, save_path: str):
-    if not os.path.exists(db_path):
+    if not op.exists(db_path):
         raise FileNotFoundError(db_path)
     shutil.move(db_path, save_path)
 
@@ -13,8 +13,8 @@ def merge_copy_db(db_path: str, save_path: str):
 # 合并相同名称的数据库 MSG0-MSG9.db
 # CreateTime: 从这个时间开始的消息 10位时间戳
 def merge_msg_db(db_path: list, save_path: str, CreateTime: int = 0):
-    if os.path.isdir(save_path):
-        save_path = os.path.join(save_path, "merge_MSG.db")
+    if op.isdir(save_path):
+        save_path = op.join(save_path, "merge_MSG.db")
 
     merged_conn = sqlite3.connect(save_path)
     merged_cursor = merged_conn.cursor()
@@ -123,8 +123,8 @@ def merge_msg_db(db_path: list, save_path: str, CreateTime: int = 0):
 
 def merge_media_msg_db(db_path: list, save_path: str):
     # 判断save_path是否为文件夹
-    if os.path.isdir(save_path):
-        save_path = os.path.join(save_path, "merge_Media.db")
+    if op.isdir(save_path):
+        save_path = op.join(save_path, "merge_Media.db")
     merged_conn = sqlite3.connect(save_path)
     merged_cursor = merged_conn.cursor()
 
@@ -204,8 +204,8 @@ def merge_db(db_path: str | list[str], save_path="merge.db", CreateTime: int = 0
     """
     合并数据库 会忽略主键以及重复的行。
     """
-    if os.path.isdir(save_path):
-        save_path = os.path.join(save_path, f"merge_{int(time.time())}.db")
+    if op.isdir(save_path):
+        save_path = op.join(save_path, f"merge_{int(time.time())}.db")
 
     if isinstance(db_path, str):
         databases = [db_path]
