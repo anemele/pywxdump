@@ -93,9 +93,9 @@ def cmd_dump(output: str | None):
 
         wx_db_path_list = [op.join(k, vv) for k, v in wx_db_path.items() for vv in v]
         # 过滤掉无需解密的数据库
-        wx_db_path_list = [
-            i for i in wx_db_path_list if "Backup.db" not in i and "xInfo.db" not in i
-        ]
+        # wx_db_path_list = [
+        #     i for i in wx_db_path_list if "Backup.db" not in i and "xInfo.db" not in i
+        # ]
 
         # logger.debug(f'{wx_db_path_list=}')
         if len(wx_db_path_list) == 0:

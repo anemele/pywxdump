@@ -158,16 +158,7 @@ class BiasData:
 def read_bias_data(path: str) -> dict[str, BiasData]:
     with open(path, 'rb') as fp:
         data = json.load(fp)
-    return {
-        k: BiasData(
-            name=v['name'],
-            account=v['account'],
-            phone=v['phone'],
-            email=v['email'],
-            key=v['key'],
-        )
-        for k, v in data.items()
-    }
+    return {k: BiasData(**v) for k, v in data.items()}
 
 
 @dataclass
