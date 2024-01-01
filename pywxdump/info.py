@@ -29,7 +29,7 @@ def get_info_without_key(h_process, address, n_size=64) -> str | None:
     array = bytes(array)
     if b"\x00" in array:
         array = array.split(b"\x00", 1)[0]
-    text = array.decode('utf-8', errors='ignore')
+    text = array.decode()
     return text.strip() or None
 
 
@@ -82,7 +82,7 @@ def _get_w_dir() -> str:
         return op.expanduser('~\\Documents')
 
 
-def get_info_filePath(wxid="all") -> str | None:
+def get_info_db_path(wxid="all") -> str | None:
     if not wxid:
         return
 
@@ -169,7 +169,7 @@ class WxInfo:
     email: str | None = None
     key: str | None = None
     wxid: str | None = None
-    filepath: str | None = None
+    db_path: str | None = None
 
 
 def read_wx_process(process: Process, bias: BiasData) -> WxInfo:
@@ -187,16 +187,16 @@ def read_wx_process(process: Process, bias: BiasData) -> WxInfo:
     if bias.name != 0:
         info.name = get_info_without_key(Handle, base_addr + bias.name, 64)
     if bias.account != 0:
-        info.account = get_info_without_key(Handle, base_addr + bias.account, 32)
+        info.account = get_info_without_key(Handle, base_addr + bias.account, 64)
     if bias.phone != 0:
         info.phone = get_info_without_key(Handle, base_addr + bias.phone, 64)
     if bias.email != 0:
         info.email = get_info_without_key(Handle, base_addr + bias.email, 64)
 
     if info.wxid is not None:
-        info.filepath = get_info_filePath(info.wxid)
-    if info.filepath is not None:
-        info.key = get_key(process.pid, info.filepath, ADDR_LEN)
+        info.db_path = get_info_db_path(info.wxid)
+    if info.db_path is not None:
+        info.key = get_key(process.pid, info.db_path, ADDR_LEN)
 
     return info
 
@@ -222,7 +222,7 @@ def get_wx_db(
     wxid: list[str] | str | None = None,
 ):
     if msg_dir is None:
-        msg_dir = get_info_filePath(wxid="all")
+        msg_dir = get_info_db_path(wxid="all")
 
     if msg_dir is None or not op.exists(msg_dir):
         print('not found: msg_dir')
